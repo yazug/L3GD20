@@ -1,11 +1,10 @@
 #include <L3GD20.h>
 #include <Wire.h>
-#include <math.h>
 
 // Defines ////////////////////////////////////////////////////////////////
 #define _MULTI_REGISTER_GYRO_READ
 
-// The Arduino two-wire interface uses a 7-bit number for the address, 
+// The Arduino two-wire interface uses a 7-bit number for the address,
 // and sets the last bit correctly based on reads and writes
 #define L3GD20_ADDR_SEL_LOW	0x6a
 #define L3GD20_ADDR_SEL_HIGH	0x6b
@@ -58,7 +57,7 @@ void L3GD20::writeReg(uint8_t reg, uint8_t value)
 uint8_t L3GD20::readReg(uint8_t reg)
 {
 	uint8_t value;
-	
+
 	Wire.beginTransmission(I2CAddr);
 	Wire.write(reg);
 	Wire.endTransmission();
@@ -68,24 +67,24 @@ uint8_t L3GD20::readReg(uint8_t reg)
 
 	value = Wire.read();
 	Wire.endTransmission();
-	
+
 	return value;
 }
 
-// Reads the 3 gyro channels 
+// Reads the 3 gyro channels
 void L3GD20::readGyro(int16_t *pX, int16_t *pY, int16_t *pZ)
 {
 	Wire.beginTransmission(I2CAddr);
 
 #ifdef _MULTI_REGISTER_GYRO_READ
-	// assert the MSB of the address to get the gyro 
+	// assert the MSB of the address to get the gyro
 	// to do slave-transmit subaddress updating.
-	Wire.write(L3GD20_OUT_X_L | (1 << 7)); 
+	Wire.write(L3GD20_OUT_X_L | (1 << 7));
 	Wire.endTransmission();
 	Wire.requestFrom(I2CAddr, 6);
 
 	while (Wire.available() < 6);
-	
+
 	uint8_t xla = Wire.read();
 	uint8_t xha = Wire.read();
 	uint8_t yla = Wire.read();
